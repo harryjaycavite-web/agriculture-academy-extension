@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Agriculture Academy | Quick AgLE Self-Test — Agricultural Extension &amp; Communication</title>
+<style>
+  :root{
+    --primary:#0d6e6e;
+    --primary-dark:#084c4c;
+    --primary-light:#e2f2f1;
+    --accent:#f9a825;
+    --accent-dark:#e08c00;
+    --bg:#f5f8f8;
+    --card:#ffffff;
+    --text:#1c2422;
+    --muted:#5f6d6a;
+    --border:#dde9e8;
+    --success:#2e7d32;
+    --success-bg:#e6f4ea;
+    --error:#c62828;
+    --error-bg:#fdeaea;
+    --radius-lg:18px;
+    --radius-md:12px;
+    --radius-sm:8px;
+    --shadow:0 6px 20px rgba(13,60,60,0.08);
+    --shadow-sm:0 2px 8px rgba(13,60,60,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(180deg,#f5f8f8 0%,#eef4f3 100%);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+  }
+  .app{
+    width:100%;
+    max-width:920px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:var(--bg);
+  }
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(245,248,248,0.92);
+    backdrop-filter:blur(6px);
+    padding:14px 20px 10px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{
+    font-weight:800;
+    font-size:1.05rem;
+    color:var(--primary-dark);
+    margin-bottom:8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .progress-wrap{display:flex; align-items:center; gap:10px;}
+  .progress-track{
+    flex:1; height:8px; background:var(--border); border-radius:99px; overflow:hidden;
+  }
+  .progress-bar{
+    height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--accent));
+    border-radius:99px; transition:width .4s ease;
+  }
+  #progressLabel{font-size:.78rem; color:var(--muted); white-space:nowrap; font-weight:600;}
+
+  /* generous bottom clearance so fixed nav never overlaps quiz controls */
+  main{flex:1; padding:20px; padding-bottom:180px;}
+
+  .slide{display:none; animation:fadeIn .35s ease;}
+  .slide.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .intro-card{
+    background:var(--card); border-radius:var(--radius-lg); padding:36px 26px;
+    text-align:center; box-shadow:var(--shadow); margin-top:10px;
+  }
+  .intro-emoji{font-size:2.6rem; margin-bottom:6px;}
+  .intro-card h1{font-size:1.45rem; margin:6px 0 10px; color:var(--primary-dark);}
+  .intro-card p{color:var(--muted); line-height:1.6; font-size:.98rem; max-width:540px; margin:0 auto 10px;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0 26px;}
+  .badge{
+    background:var(--primary-light); color:var(--primary-dark); font-weight:700;
+    padding:8px 14px; border-radius:99px; font-size:.82rem; border:1px solid #bfe0dd;
+  }
+  .domain-preview{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px; margin:20px 0; text-align:left;
+  }
+  .domain-chip{
+    background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:10px 12px; font-size:.8rem; font-weight:600; color:var(--text);
+  }
+  .domain-chip span{display:block; font-size:.7rem; color:var(--muted); font-weight:500; margin-top:2px;}
+
+  .btn{
+    border:none; border-radius:var(--radius-md); padding:14px 22px; font-size:1rem; font-weight:700;
+    cursor:pointer; min-height:50px; transition:transform .12s ease, box-shadow .12s ease, opacity .12s;
+    touch-action:manipulation;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--primary); color:#fff; box-shadow:0 4px 12px rgba(13,110,110,0.3);}
+  .btn-primary:hover{background:var(--primary-dark);}
+  .btn-accent{background:var(--accent); color:#3a2a00; box-shadow:0 4px 12px rgba(249,168,37,0.35);}
+  .btn-accent:hover{background:var(--accent-dark);}
+  .btn-ghost{background:transparent; color:var(--muted); border:2px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--primary); color:var(--primary-dark);}
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+  .hidden{display:none !important;}
+
+  .domain-header{margin-bottom:14px;}
+  .domain-tag{
+    display:inline-block; background:var(--primary-light); color:var(--primary-dark);
+    font-size:.75rem; font-weight:800; letter-spacing:.03em; padding:5px 10px; border-radius:99px;
+    text-transform:uppercase; margin-bottom:8px;
+  }
+  .domain-header h2{margin:0; font-size:1.25rem; color:var(--text);}
+
+  .domain-grid{
+    display:grid; grid-template-columns:1fr; gap:14px; margin-bottom:16px;
+  }
+  @media(min-width:760px){
+    .domain-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  .review-panel, .visual-panel, .quiz-card{
+    background:var(--card); border-radius:var(--radius-lg); padding:18px 18px 20px;
+    box-shadow:var(--shadow-sm); border:1px solid var(--border);
+  }
+  .umbrella{
+    margin:0 0 12px; font-size:1.02rem; color:var(--primary-dark); font-weight:800;
+    padding-bottom:8px; border-bottom:2px dashed var(--border);
+  }
+  .subtopics{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .subtopics li{
+    font-size:.9rem; line-height:1.5; color:var(--text); padding-left:22px; position:relative;
+  }
+  .subtopics li::before{
+    content:"📣"; position:absolute; left:0; top:0; font-size:.85rem;
+  }
+  .subtopics li strong{color:var(--primary-dark);}
+
+  .visual-panel h4{margin:0 0 10px; font-size:.9rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
+  .visual-panel svg{width:100%; height:auto; display:block; background:var(--bg); border-radius:var(--radius-sm);}
+  .visual-panel input[type="range"]{width:100%; margin-top:12px; accent-color:var(--primary); height:26px;}
+  .visual-readout{
+    font-size:.82rem; color:var(--text); background:var(--primary-light); border-radius:var(--radius-sm);
+    padding:9px 11px; margin-top:10px; line-height:1.5; min-height:20px;
+  }
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+  .term-chip{
+    background:var(--primary); color:#fff; font-weight:800; font-size:.82rem;
+    padding:10px 14px; border-radius:99px; cursor:pointer; user-select:none;
+    transition:transform .12s ease;
+  }
+  .term-chip:active{transform:scale(0.96);}
+  .term-tooltip{
+    display:none; margin-top:10px; background:var(--primary-light); color:var(--text);
+    border-radius:var(--radius-sm); padding:10px 12px; font-size:.82rem; font-weight:500; line-height:1.5;
+  }
+  .term-tooltip.show{display:block;}
+
+  .bar-track{background:var(--border); border-radius:99px; height:14px; overflow:hidden; margin:6px 0;}
+  .bar-fill{height:100%; border-radius:99px; transition:width .25s ease;}
+  .bar-label{font-size:.76rem; color:var(--muted); font-weight:700; display:flex; justify-content:space-between;}
+
+  .question-text{font-size:1rem; font-weight:700; margin:0 0 14px; line-height:1.5;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option-card{
+    background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-md);
+    padding:14px 16px; font-size:.92rem; cursor:pointer; min-height:48px; display:flex; align-items:flex-start; gap:10px;
+    transition:border-color .15s ease, background .15s ease; line-height:1.4;
+  }
+  .option-card:active{transform:scale(0.99);}
+  .option-letter{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--primary);
+    color:#fff; font-weight:800; font-size:.8rem; display:flex; align-items:center; justify-content:center;
+  }
+  .option-card.selected{border-color:var(--primary); background:var(--primary-light); font-weight:700;}
+  .option-card.disabled{cursor:not-allowed; pointer-events:none;}
+  .option-card.correct-answer{border-color:var(--success); background:var(--success-bg); font-weight:700;}
+  .option-card.correct-answer .option-letter{background:var(--success);}
+  .option-card.wrong-answer{border-color:var(--error); background:var(--error-bg); font-weight:700;}
+  .option-card.wrong-answer .option-letter{background:var(--error);}
+
+  .action-row{margin-top:16px;}
+  .confirm-box{
+    margin-top:14px; background:#fff8e6; border:1px solid #f3d98a; border-radius:var(--radius-md);
+    padding:14px 16px;
+  }
+  .confirm-box p{margin:0 0 12px; font-weight:700; font-size:.9rem;}
+  .confirm-actions{display:flex; gap:10px;}
+  .confirm-actions .btn{flex:1; padding:11px; min-height:44px;}
+
+  .feedback{margin-top:16px; border-radius:var(--radius-md); padding:14px 16px;}
+  .feedback-correct{background:var(--success-bg); border:1px solid #b6dfc0;}
+  .feedback-wrong{background:var(--error-bg); border:1px solid #f0bcbc;}
+  .feedback-title{margin:0 0 6px; font-weight:800; font-size:1rem;}
+  .feedback p{margin:0 0 8px; font-size:.9rem; line-height:1.5;}
+  .calc-box{
+    margin-top:8px; background:rgba(255,255,255,0.6); border-radius:var(--radius-sm);
+    padding:10px 12px; font-size:.85rem; line-height:1.8; font-family:"SFMono-Regular",Consolas,monospace;
+  }
+
+  .score-card{
+    background:var(--card); border-radius:var(--radius-lg); padding:32px 22px; text-align:center;
+    box-shadow:var(--shadow); margin-top:6px;
+  }
+  .score-number{font-size:3rem; font-weight:900; color:var(--primary-dark); margin:8px 0;}
+  .motivation{font-size:.98rem; color:var(--text); max-width:500px; margin:6px auto 22px; line-height:1.6;}
+  .rec-title{font-size:.9rem; font-weight:800; text-transform:uppercase; letter-spacing:.02em; color:var(--muted); margin:22px 0 12px; text-align:left;}
+  #recommendations{display:flex; flex-direction:column; gap:10px; text-align:left;}
+  .rec-item{
+    background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:12px 14px; font-size:.87rem; line-height:1.5;
+  }
+  .rec-item strong{color:var(--primary-dark);}
+  .all-correct{background:var(--success-bg); border-radius:var(--radius-md); padding:14px; font-weight:700;}
+
+  .navbar{
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:920px; background:rgba(245,248,248,0.96); backdrop-filter:blur(6px);
+    border-top:1px solid var(--border); padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+    display:flex; gap:10px; z-index:20;
+  }
+  .navbar .btn{flex:1;}
+
+  .toast{
+    position:fixed; bottom:140px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:#2b2b2b; color:#fff; padding:12px 20px; border-radius:99px; font-size:.85rem;
+    font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+    z-index:50; white-space:nowrap; box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:480px){
+    .intro-card h1{font-size:1.2rem;}
+    .score-number{font-size:2.3rem;}
+    main{padding:14px; padding-bottom:190px;}
+    .toast{white-space:normal; text-align:center; max-width:88%;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">📣 Agriculture Academy</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      <span id="progressLabel">Intro</span>
+    </div>
+  </div>
+
+  <main id="slides">
+
+    <!-- INTRO -->
+    <section class="slide active" id="slide-0">
+      <div class="intro-card">
+        <div class="intro-emoji">📡</div>
+        <h1>Quick AgLE Self-Test — Agricultural Extension &amp; Communication</h1>
+        <p>A rapid diagnostic covering the six core Agricultural Extension and Communication (AEC) domains of the AgLE: Extension Principles &amp; History, Communication Processes &amp; Elements, Program Planning &amp; Implementation, Extension Methods &amp; Strategies, Technology Adoption &amp; Diffusion, and Rural Sociology &amp; Monitoring/Evaluation. Each domain includes a quick concept review, an interactive figure, and one exam-style question.</p>
+        <div class="badge-row">
+          <span class="badge">⏱ 10–15 minutes</span>
+          <span class="badge">📝 6 questions</span>
+          <span class="badge">🔁 1 free retake</span>
+        </div>
+        <div class="domain-preview">
+          <div class="domain-chip">1. Extension Principles &amp; History<span>Foundations &amp; devolution</span></div>
+          <div class="domain-chip">2. Communication Process<span>SMCR &amp; reach</span></div>
+          <div class="domain-chip">3. Program Planning<span>Situation → Evaluation</span></div>
+          <div class="domain-chip">4. Extension Methods<span>Individual, group, mass</span></div>
+          <div class="domain-chip">5. Technology Adoption<span>Diffusion S-curve</span></div>
+          <div class="domain-chip">6. Rural Sociology &amp; M&amp;E<span>Monitoring vs evaluation</span></div>
+        </div>
+        <button class="btn btn-primary btn-block" id="startBtn">Start Quiz →</button>
+      </div>
+    </section>
+
+    <!-- DOMAIN 1: EXTENSION PRINCIPLES AND HISTORY -->
+    <section class="slide" id="slide-1">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 1 of 6</span>
+        <h2>Extension Principles &amp; History</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">📜 Foundations of Agricultural Extension</h3>
+          <ul class="subtopics">
+            <li><strong>Philosophy of Extension</strong> — working WITH people, not FOR them; education-based, voluntary, grassroots-oriented.</li>
+            <li><strong>Historical Evolution</strong> — from early demonstration farms to the formal Extension Service under the Department of Agriculture.</li>
+            <li><strong>Devolution (RA 7160)</strong> — the 1991 Local Government Code transferred agricultural extension delivery to LGUs.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: PH Extension Timeline</h4>
+          <svg viewBox="0 0 300 90">
+            <line x1="20" y1="50" x2="280" y2="50" stroke="#bcd6d4" stroke-width="4"/>
+            <circle id="timelineDot" cx="20" cy="50" r="9" fill="#f9a825" stroke="#084c4c" stroke-width="2"/>
+          </svg>
+          <input type="range" id="timelineSlider" min="0" max="100" value="0">
+          <p class="visual-readout" id="timelineReadout"></p>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-0">
+        <p class="question-text" id="qtext-0"></p>
+        <div class="options" id="options-0"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-0" data-domain="0">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-0">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-0" data-domain="0">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-0" data-domain="0">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-0"></div>
+      </div>
+    </section>
+
+    <!-- DOMAIN 2: COMMUNICATION PROCESSES AND ELEMENTS -->
+    <section class="slide" id="slide-2">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 2 of 6</span>
+        <h2>Communication Processes &amp; Elements</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">🗣️ The Communication Process</h3>
+          <ul class="subtopics">
+            <li><strong>SMCR Model</strong> — Source, Message, Channel, and Receiver form the basic communication chain.</li>
+            <li><strong>Noise &amp; Feedback</strong> — noise distorts the message; feedback confirms whether it was understood.</li>
+            <li><strong>Audience Reach</strong> — the % of a target population actually exposed to an extension message.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: Tap an SMCR Element</h4>
+          <div class="chip-row" id="smcrChips"></div>
+          <div class="term-tooltip" id="smcrTooltip"></div>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-1">
+        <p class="question-text" id="qtext-1"></p>
+        <div class="options" id="options-1"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-1" data-domain="1">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-1">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-1" data-domain="1">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-1" data-domain="1">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-1"></div>
+      </div>
+    </section>
+
+    <!-- DOMAIN 3: PROGRAM PLANNING AND IMPLEMENTATION -->
+    <section class="slide" id="slide-3">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 3 of 6</span>
+        <h2>Program Planning &amp; Implementation</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">🗂️ Extension Program Development Cycle</h3>
+          <ul class="subtopics">
+            <li><strong>Situation Analysis</strong> — baseline data-gathering on farmer needs, resources, and problems.</li>
+            <li><strong>SMART Objectives</strong> — Specific, Measurable, Achievable, Relevant, Time-bound goal-setting.</li>
+            <li><strong>Plan of Work &amp; Implementation</strong> — scheduling activities, resources, and responsible staff to execute the plan.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: Tap a Planning Stage</h4>
+          <div class="chip-row" id="planChips"></div>
+          <div class="term-tooltip" id="planTooltip"></div>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-2">
+        <p class="question-text" id="qtext-2"></p>
+        <div class="options" id="options-2"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-2" data-domain="2">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-2">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-2" data-domain="2">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-2" data-domain="2">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-2"></div>
+      </div>
+    </section>
+
+    <!-- DOMAIN 4: EXTENSION METHODS AND STRATEGIES -->
+    <section class="slide" id="slide-4">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 4 of 6</span>
+        <h2>Extension Methods &amp; Strategies</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">🧑‍🌾 Extension Teaching Methods</h3>
+          <ul class="subtopics">
+            <li><strong>Individual Methods</strong> — farm/home visits, personal consultations; high cost per farmer, high impact.</li>
+            <li><strong>Group Methods</strong> — demonstrations, field days, farmer field schools; balanced cost and reach.</li>
+            <li><strong>Mass Methods</strong> — radio, print, social media; lowest cost per farmer, widest reach.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: Audience Size vs. Method</h4>
+          <div class="bar-label"><span>Individual</span><span id="labelIndiv"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="barIndiv" style="background:#0d6e6e;"></div></div>
+          <div class="bar-label"><span>Group</span><span id="labelGroup"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="barGroup" style="background:#f9a825;"></div></div>
+          <div class="bar-label"><span>Mass Media</span><span id="labelMass"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="barMass" style="background:#5b8def;"></div></div>
+          <input type="range" id="methodSlider" min="0" max="100" value="20">
+          <p class="visual-readout" id="methodReadout"></p>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-3">
+        <p class="question-text" id="qtext-3"></p>
+        <div class="options" id="options-3"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-3" data-domain="3">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-3">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-3" data-domain="3">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-3" data-domain="3">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-3"></div>
+      </div>
+    </section>
+
+    <!-- DOMAIN 5: TECHNOLOGY ADOPTION AND DIFFUSION -->
+    <section class="slide" id="slide-5">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 5 of 6</span>
+        <h2>Technology Adoption &amp; Diffusion</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">📈 Diffusion of Innovations</h3>
+          <ul class="subtopics">
+            <li><strong>Adopter Categories</strong> — Innovators → Early Adopters → Early Majority → Late Majority → Laggards.</li>
+            <li><strong>Adoption S-Curve</strong> — cumulative adoption starts slow, accelerates, then plateaus over time.</li>
+            <li><strong>Innovation-Decision Process</strong> — Knowledge → Persuasion → Decision → Implementation → Confirmation.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: Adoption S-Curve Over Time</h4>
+          <svg viewBox="0 0 300 150">
+            <line x1="20" y1="20" x2="20" y2="130" stroke="#9fb8b6" stroke-width="2"/>
+            <line x1="20" y1="130" x2="280" y2="130" stroke="#9fb8b6" stroke-width="2"/>
+            <path d="M20,125 C 90,125 100,20 150,20 C 200,20 210,125 280,125" fill="none" stroke="#0d6e6e" stroke-width="3"/>
+            <circle id="sCurveDot" cx="20" cy="125" r="7" fill="#f9a825" stroke="#084c4c" stroke-width="2"/>
+            <text x="6" y="14" font-size="10" fill="#5f6d6a">% Adopted</text>
+            <text x="248" y="144" font-size="10" fill="#5f6d6a">Time</text>
+          </svg>
+          <input type="range" id="sCurveSlider" min="0" max="100" value="0">
+          <p class="visual-readout" id="sCurveReadout"></p>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-4">
+        <p class="question-text" id="qtext-4"></p>
+        <div class="options" id="options-4"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-4" data-domain="4">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-4">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-4" data-domain="4">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-4" data-domain="4">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-4"></div>
+      </div>
+    </section>
+
+    <!-- DOMAIN 6: RURAL SOCIOLOGY AND MONITORING/EVALUATION -->
+    <section class="slide" id="slide-6">
+      <div class="domain-header">
+        <span class="domain-tag">Domain 6 of 6</span>
+        <h2>Rural Sociology &amp; Monitoring/Evaluation</h2>
+      </div>
+      <div class="domain-grid">
+        <div class="review-panel">
+          <h3 class="umbrella">🏘️ Rural Society &amp; M&amp;E</h3>
+          <ul class="subtopics">
+            <li><strong>Rural Social Structure</strong> — leadership patterns, norms, and social systems shape adoption behavior.</li>
+            <li><strong>Opinion Leaders</strong> — trusted community figures whose endorsement accelerates technology adoption.</li>
+            <li><strong>Monitoring vs. Evaluation</strong> — monitoring tracks ongoing activities/outputs; evaluation assesses outcomes/impact.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h4>Interactive: Monitoring vs. Evaluation</h4>
+          <div class="chip-row" id="meChips"></div>
+          <div class="term-tooltip" id="meTooltip"></div>
+        </div>
+      </div>
+      <div class="quiz-card" id="quiz-5">
+        <p class="question-text" id="qtext-5"></p>
+        <div class="options" id="options-5"></div>
+        <div class="action-row">
+          <button class="btn btn-accent hidden" id="submitBtn-5" data-domain="5">Submit Answer</button>
+        </div>
+        <div class="confirm-box hidden" id="confirmBox-5">
+          <p>Are you sure you want to submit this answer?</p>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" id="yesBtn-5" data-domain="5">Yes</button>
+            <button class="btn btn-ghost" id="noBtn-5" data-domain="5">No</button>
+          </div>
+        </div>
+        <div class="feedback hidden" id="feedback-5"></div>
+      </div>
+    </section>
+
+    <!-- SCORE -->
+    <section class="slide" id="slide-6-score">
+      <div class="score-card">
+        <div class="intro-emoji">🎓</div>
+        <h1 style="margin:4px 0 0; font-size:1.3rem; color:var(--primary-dark);">Your Results</h1>
+        <div class="score-number" id="scoreNumber">0 / 6</div>
+        <p class="motivation" id="motivationText"></p>
+        <div class="rec-title">📌 Study Focus Recommendations</div>
+        <div id="recommendations"></div>
+        <button class="btn btn-accent btn-block" id="retakeBtn" style="margin-top:24px;">🔁 Retake Quiz (1 attempt available)</button>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="navbar" id="navbar">
+    <button class="btn btn-ghost" id="prevBtn">← Back</button>
+    <button class="btn btn-primary" id="nextBtn">Next →</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ---------------------------- QUESTION DATA ---------------------------- */
+/* Each question stores options in a fixed canonical order plus the exact
+   text of the correct answer. Options are shuffled at render time so the
+   correct answer's on-screen letter (A/B/C/D) changes every time. */
+const primaryQuestions = [
+  {
+    question: "Under the 1991 Local Government Code (RA 7160), agricultural extension services in the Philippines were devolved to:",
+    options: ["Local Government Units (LGUs)", "DA Regional Field Offices", "State Universities and Colleges", "Private Farmer Cooperatives"],
+    answer: "Local Government Units (LGUs)",
+    feedbackCorrect: "Correct! RA 7160 devolved front-line agricultural extension delivery from the national DA to city/municipal LGUs.",
+    feedbackWrong: "Not quite. RA 7160 (the Local Government Code of 1991) devolved extension services to <strong>Local Government Units (LGUs)</strong>.",
+    calculation: null
+  },
+  {
+    question: "An extension worker distributed 250 leaflets in a barangay with 1,000 farming households. What is the audience reach percentage?",
+    options: ["25%", "40%", "10%", "50%"],
+    answer: "25%",
+    feedbackCorrect: "Correct! 250 out of 1,000 households reached equals a 25% audience reach.",
+    feedbackWrong: "Not quite. Let's compute the audience reach step by step below.",
+    calculation: "Audience Reach (%) = (Households Reached ÷ Total Households) × 100<br>= (250 ÷ 1,000) × 100 = <strong>25%</strong>"
+  },
+  {
+    question: "Which step in the extension program planning cycle involves gathering baseline data on farmers' needs, resources, and problems before setting objectives?",
+    options: ["Situation Analysis", "Plan of Work", "Implementation", "Evaluation"],
+    answer: "Situation Analysis",
+    feedbackCorrect: "Correct! Situation analysis is the diagnostic first step that informs realistic objective-setting.",
+    feedbackWrong: "Not quite. Gathering baseline needs and resource data is the <strong>Situation Analysis</strong> stage.",
+    calculation: null
+  },
+  {
+    question: "An extension program spent PhP50,000 conducting field demonstrations that generated an estimated PhP175,000 in additional farmer income. What is the program's benefit-cost ratio?",
+    options: ["3.5 : 1", "1 : 3.5", "2.5 : 1", "4 : 1"],
+    answer: "3.5 : 1",
+    feedbackCorrect: "Correct! Every PhP1 spent generated PhP3.5 in benefits — a strong benefit-cost ratio of 3.5:1.",
+    feedbackWrong: "Not quite. Let's compute the benefit-cost ratio step by step below.",
+    calculation: "Benefit-Cost Ratio = Total Benefit ÷ Total Cost<br>= PhP175,000 ÷ PhP50,000 = <strong>3.5 : 1</strong>"
+  },
+  {
+    question: "Out of 400 rice farmers in a municipality, 92 adopted the recommended fertilizer rate after two cropping seasons. What is the technology adoption rate?",
+    options: ["23%", "46%", "9.2%", "32%"],
+    answer: "23%",
+    feedbackCorrect: "Correct! 92 out of 400 adopters equals a 23% technology adoption rate.",
+    feedbackWrong: "Not quite. Let's compute the adoption rate step by step below.",
+    calculation: "Adoption Rate (%) = (Adopters ÷ Total Target Population) × 100<br>= (92 ÷ 400) × 100 = <strong>23%</strong>"
+  },
+  {
+    question: "Which M&E activity is primarily concerned with the continuous tracking of program activities and immediate outputs during implementation, rather than long-term impact?",
+    options: ["Monitoring", "Evaluation", "Situation Analysis", "Diffusion"],
+    answer: "Monitoring",
+    feedbackCorrect: "Correct! Monitoring is the ongoing, real-time tracking of activities and outputs while a program is running.",
+    feedbackWrong: "Not quite. Continuous, real-time tracking of activities/outputs describes <strong>Monitoring</strong> (evaluation looks at outcomes/impact, usually periodically).",
+    calculation: null
+  }
+];
+
+const retakeQuestions = [
+  {
+    question: "Which statement best describes the guiding philosophy of agricultural extension education?",
+    options: ["Working WITH people, not FOR them", "Top-down technology transfer only", "One-size-fits-all training for all farmers", "Extension services limited to large-scale farms"],
+    answer: "Working WITH people, not FOR them",
+    feedbackCorrect: "Correct! Extension is fundamentally a two-way educational partnership, not a one-way directive process.",
+    feedbackWrong: "Not quite. The core philosophy of extension is <strong>working WITH people, not FOR them</strong> — a participatory, educational approach.",
+    calculation: null
+  },
+  {
+    question: "A radio farm program reached an estimated 12,000 listeners out of 50,000 total farming households in its coverage area. What is the audience reach percentage?",
+    options: ["24%", "40%", "12%", "60%"],
+    answer: "24%",
+    feedbackCorrect: "Correct! 12,000 out of 50,000 households reached equals a 24% audience reach.",
+    feedbackWrong: "Not quite. Let's compute the audience reach step by step below.",
+    calculation: "Audience Reach (%) = (Households Reached ÷ Total Households) × 100<br>= (12,000 ÷ 50,000) × 100 = <strong>24%</strong>"
+  },
+  {
+    question: "Setting specific, measurable, achievable, relevant, and time-bound goals in an extension program refers to which planning step?",
+    options: ["Objective Setting (SMART goals)", "Situation Analysis", "Plan of Work", "Monitoring"],
+    answer: "Objective Setting (SMART goals)",
+    feedbackCorrect: "Correct! SMART criteria define clear, achievable objectives that guide the rest of the program cycle.",
+    feedbackWrong: "Not quite. Specific, Measurable, Achievable, Relevant, Time-bound goals describe <strong>Objective Setting (SMART goals)</strong>.",
+    calculation: null
+  },
+  {
+    question: "A cooperative spent PhP80,000 on farmer field schools that resulted in an estimated PhP200,000 increase in combined farmer income. What is the benefit-cost ratio?",
+    options: ["2.5 : 1", "1 : 2.5", "4 : 1", "1.6 : 1"],
+    answer: "2.5 : 1",
+    feedbackCorrect: "Correct! Every PhP1 invested returned PhP2.5 in farmer income gains — a benefit-cost ratio of 2.5:1.",
+    feedbackWrong: "Not quite. Let's compute the benefit-cost ratio step by step below.",
+    calculation: "Benefit-Cost Ratio = Total Benefit ÷ Total Cost<br>= PhP200,000 ÷ PhP80,000 = <strong>2.5 : 1</strong>"
+  },
+  {
+    question: "Of 250 corn farmers introduced to a new hybrid seed variety, 60 adopted it within the first season. What is the technology adoption rate?",
+    options: ["24%", "60%", "15%", "40%"],
+    answer: "24%",
+    feedbackCorrect: "Correct! 60 out of 250 adopters equals a 24% technology adoption rate.",
+    feedbackWrong: "Not quite. Let's compute the adoption rate step by step below.",
+    calculation: "Adoption Rate (%) = (Adopters ÷ Total Target Population) × 100<br>= (60 ÷ 250) × 100 = <strong>24%</strong>"
+  },
+  {
+    question: "Which rural sociology concept refers to individuals within a community who are looked to for guidance, and whose endorsement often accelerates technology adoption?",
+    options: ["Opinion Leaders", "Laggards", "Change Agents", "Innovators"],
+    answer: "Opinion Leaders",
+    feedbackCorrect: "Correct! Opinion leaders are trusted, socially influential community members whose adoption encourages others to follow.",
+    feedbackWrong: "Not quite. Trusted community figures whose endorsement drives wider adoption are called <strong>Opinion Leaders</strong>.",
+    calculation: null
+  }
+];
+
+const domainNames = ["Extension Principles & History", "Communication Processes & Elements", "Program Planning & Implementation", "Extension Methods & Strategies", "Technology Adoption & Diffusion", "Rural Sociology & Monitoring/Evaluation"];
+const recommendations = [
+  "Review the history and guiding principles of agricultural extension, including devolution under the Local Government Code (RA 7160).",
+  "Revisit the SMCR communication model and practice audience reach percentage calculations.",
+  "Study the extension program planning cycle — situation analysis, SMART objective setting, and plan of work.",
+  "Practice cost-benefit ratio computations and review individual, group, and mass extension methods.",
+  "Master adopter categories, the adoption S-curve, and technology adoption rate calculations.",
+  "Differentiate monitoring from evaluation, and review rural social structures and opinion leadership."
+];
+
+const LETTERS = ["A","B","C","D"];
+
+/* ---------------------------- STATE ---------------------------- */
+const NUM_DOMAINS = 6;
+const state = {
+  current: 0,
+  isRetake: false,
+  retakeUsed: false,
+  answers: Array.from({length:NUM_DOMAINS}, () => ({selected:null, confirmed:false, correct:null, correctIndex:null}))
+};
+function getQuestions(){ return state.isRetake ? retakeQuestions : primaryQuestions; }
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+/* ---------------------------- SLIDE NAV ---------------------------- */
+const slideEls = [
+  document.getElementById('slide-0'),
+  document.getElementById('slide-1'),
+  document.getElementById('slide-2'),
+  document.getElementById('slide-3'),
+  document.getElementById('slide-4'),
+  document.getElementById('slide-5'),
+  document.getElementById('slide-6'),
+  document.getElementById('slide-6-score')
+];
+const TOTAL_STEPS = NUM_DOMAINS + 1;
+
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const navbar = document.getElementById('navbar');
+const progressBar = document.getElementById('progressBar');
+const progressLabel = document.getElementById('progressLabel');
+
+function renderSlideNav(){
+  slideEls.forEach((el,i) => el.classList.toggle('active', i===state.current));
+  progressBar.style.width = (state.current/(TOTAL_STEPS+1)*100)+'%';
+  if(state.current===0){ progressLabel.textContent = 'Introduction'; }
+  else if(state.current>=1 && state.current<=NUM_DOMAINS){ progressLabel.textContent = 'Question '+state.current+' of '+NUM_DOMAINS; }
+  else { progressLabel.textContent = 'Results'; }
+
+  prevBtn.style.visibility = state.current===0 ? 'hidden' : 'visible';
+  navbar.style.display = (state.current===0 || state.current===NUM_DOMAINS+1) ? 'none' : 'flex';
+  nextBtn.textContent = state.current===NUM_DOMAINS ? 'See Results →' : 'Next →';
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  state.current = 1; renderSlideNav();
+});
+
+prevBtn.addEventListener('click', ()=>{
+  if(state.current>0){ state.current--; renderSlideNav(); }
+});
+
+nextBtn.addEventListener('click', ()=>{
+  if(state.current>=1 && state.current<=NUM_DOMAINS){
+    const d = state.current-1;
+    if(!state.answers[d].confirmed){
+      showToast('Please select an answer to proceed.');
+      return;
+    }
+  }
+  if(state.current===NUM_DOMAINS){
+    computeScore();
+    state.current = NUM_DOMAINS+1;
+  } else {
+    state.current++;
+  }
+  renderSlideNav();
+});
+
+/* ---------------------------- QUIZ RENDERING ---------------------------- */
+function renderDomain(d){
+  const q = getQuestions()[d];
+  document.getElementById('qtext-'+d).textContent = q.question;
+
+  const shuffledOptions = shuffle(q.options);
+  const correctIndex = shuffledOptions.indexOf(q.answer);
+  state.answers[d].correctIndex = correctIndex;
+  state.answers[d].shuffledOptions = shuffledOptions;
+
+  const opts = document.getElementById('options-'+d);
+  opts.innerHTML = '';
+  shuffledOptions.forEach((opt,i) => {
+    const div = document.createElement('div');
+    div.className = 'option-card';
+    div.innerHTML = '<span class="option-letter">'+LETTERS[i]+'</span><span>'+opt+'</span>';
+    div.addEventListener('click', ()=> selectOption(d,i));
+    opts.appendChild(div);
+  });
+  document.getElementById('submitBtn-'+d).classList.add('hidden');
+  document.getElementById('confirmBox-'+d).classList.add('hidden');
+  const fb = document.getElementById('feedback-'+d);
+  fb.classList.add('hidden');
+  fb.classList.remove('feedback-correct','feedback-wrong');
+  fb.innerHTML = '';
+}
+
+function selectOption(d, i){
+  const ans = state.answers[d];
+  if(ans.confirmed) return;
+  ans.selected = i;
+  const opts = document.getElementById('options-'+d);
+  [...opts.children].forEach((el,idx) => el.classList.toggle('selected', idx===i));
+  document.getElementById('submitBtn-'+d).classList.remove('hidden');
+  document.getElementById('confirmBox-'+d).classList.add('hidden');
+}
+
+document.querySelectorAll('[id^="submitBtn-"]').forEach(btn => {
+  btn.addEventListener('click', ()=>{
+    const d = +btn.dataset.domain;
+    document.getElementById('confirmBox-'+d).classList.remove('hidden');
+    btn.classList.add('hidden');
+  });
+});
+
+document.querySelectorAll('[id^="noBtn-"]').forEach(btn => {
+  btn.addEventListener('click', ()=>{
+    const d = +btn.dataset.domain;
+    document.getElementById('confirmBox-'+d).classList.add('hidden');
+    document.getElementById('submitBtn-'+d).classList.remove('hidden');
+  });
+});
+
+document.querySelectorAll('[id^="yesBtn-"]').forEach(btn => {
+  btn.addEventListener('click', ()=>{
+    const d = +btn.dataset.domain;
+    confirmAnswer(d);
+  });
+});
+
+function confirmAnswer(d){
+  const ans = state.answers[d];
+  const q = getQuestions()[d];
+  ans.confirmed = true;
+  ans.correct = (ans.selected === ans.correctIndex);
+
+  const opts = document.getElementById('options-'+d);
+  [...opts.children].forEach((el,i) => {
+    el.classList.add('disabled');
+    if(i === ans.correctIndex) el.classList.add('correct-answer');
+    if(i === ans.selected && !ans.correct) el.classList.add('wrong-answer');
+  });
+
+  document.getElementById('confirmBox-'+d).classList.add('hidden');
+
+  const fb = document.getElementById('feedback-'+d);
+  fb.classList.remove('hidden');
+  fb.classList.add(ans.correct ? 'feedback-correct' : 'feedback-wrong');
+  let html = '<p class="feedback-title">'+(ans.correct ? '✅ Correct!' : '❌ Not quite.')+'</p>';
+  html += '<p>'+(ans.correct ? q.feedbackCorrect : q.feedbackWrong)+'</p>';
+  if(q.calculation){
+    html += '<div class="calc-box"><strong>Step-by-step:</strong><br>'+q.calculation+'</div>';
+  }
+  fb.innerHTML = html;
+  fb.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ---------------------------- SCORE PAGE ---------------------------- */
+function computeScore(){
+  const score = state.answers.filter(a=>a.correct).length;
+  document.getElementById('scoreNumber').textContent = score+' / '+NUM_DOMAINS;
+
+  const recBox = document.getElementById('recommendations');
+  recBox.innerHTML = '';
+  const wrong = [];
+  state.answers.forEach((a,i)=>{ if(!a.correct) wrong.push(i); });
+
+  if(wrong.length===0){
+    recBox.innerHTML = '<div class="all-correct">🎉 Perfect score! No weak spots identified — keep maintaining your mastery across all six domains.</div>';
+  } else {
+    wrong.forEach(i => {
+      const div = document.createElement('div');
+      div.className = 'rec-item';
+      div.innerHTML = '<strong>'+domainNames[i]+':</strong> '+recommendations[i];
+      recBox.appendChild(div);
+    });
+  }
+
+  let motivation;
+  if(score===6) motivation = "Outstanding! You're exam-ready — keep sharpening speed and accuracy under timed conditions.";
+  else if(score===5) motivation = "Great job! You're almost there — polish up the one weak spot above before exam day.";
+  else if(score===4) motivation = "Solid performance! Review your weak domains below to lock in full mastery.";
+  else if(score===3) motivation = "Good foundation! You're halfway there — focus your review time on the domains flagged below.";
+  else if(score===2) motivation = "Keep going! Focus your review time on the domains flagged below.";
+  else motivation = "Don't be discouraged — every mistake today is a lesson learned before the real AgLE. Review the focus areas below and try again.";
+  document.getElementById('motivationText').textContent = motivation;
+
+  const retakeBtn = document.getElementById('retakeBtn');
+  if(state.retakeUsed){
+    retakeBtn.disabled = true;
+    retakeBtn.textContent = '🔒 Retake already used';
+  } else {
+    retakeBtn.disabled = false;
+    retakeBtn.textContent = '🔁 Retake Quiz (1 attempt available)';
+  }
+}
+
+document.getElementById('retakeBtn').addEventListener('click', ()=>{
+  if(state.retakeUsed) return;
+  state.retakeUsed = true;
+  state.isRetake = true;
+  state.answers = Array.from({length:NUM_DOMAINS}, () => ({selected:null, confirmed:false, correct:null, correctIndex:null}));
+  for(let i=0;i<NUM_DOMAINS;i++) renderDomain(i);
+  state.current = 1;
+  renderSlideNav();
+});
+
+/* ---------------------------- VISUAL FIGURES ---------------------------- */
+function initTimeline(){
+  const slider = document.getElementById('timelineSlider');
+  const dot = document.getElementById('timelineDot');
+  const readout = document.getElementById('timelineReadout');
+  const milestones = [
+    {t:0, label:"Early 1900s", text:"Demonstration farms and farmer field days introduce practical, hands-on teaching methods."},
+    {t:25, label:"1972 (PD 1)", text:"National agricultural extension formalized under the Department of Agriculture's Bureau of Agricultural Extension."},
+    {t:60, label:"1991 (RA 7160)", text:"The Local Government Code devolves extension service delivery from DA to city/municipal LGUs."},
+    {t:100, label:"Present", text:"Extension now blends LGU agriculturists, digital/mobile platforms, and public-private partnerships."}
+  ];
+  function update(){
+    const v = +slider.value;
+    const x = 20 + (v/100)*260;
+    dot.setAttribute('cx', x);
+    let current = milestones[0];
+    for(const m of milestones){ if(v>=m.t) current = m; }
+    readout.textContent = current.label+': '+current.text;
+  }
+  slider.addEventListener('input', update);
+  update();
+}
+
+function initSMCR(){
+  const chipsWrap = document.getElementById('smcrChips');
+  const tooltip = document.getElementById('smcrTooltip');
+  const elements = [
+    {name:'Source', desc:'The extension worker or agency originating the message (e.g., an agriculturist sharing a new farming technique).'},
+    {name:'Message', desc:'The actual content being communicated: the recommendation, technique, or information itself.'},
+    {name:'Channel', desc:'The medium used to deliver the message: face-to-face, radio, print materials, SMS, or social media.'},
+    {name:'Receiver', desc:'The farmer or audience who receives and interprets the message.'},
+    {name:'Feedback', desc:'The response from the receiver, which tells the source whether the message was understood correctly.'},
+    {name:'Noise', desc:'Any distortion, such as language barriers, poor signal, or distractions, that interferes with accurate message transfer.'}
+  ];
+  elements.forEach(el => {
+    const chip = document.createElement('div');
+    chip.className = 'term-chip';
+    chip.textContent = el.name;
+    chip.addEventListener('click', ()=>{
+      tooltip.textContent = el.name+': '+el.desc;
+      tooltip.classList.add('show');
+    });
+    chipsWrap.appendChild(chip);
+  });
+}
+
+function initPlanCycle(){
+  const chipsWrap = document.getElementById('planChips');
+  const tooltip = document.getElementById('planTooltip');
+  const stages = [
+    {name:'1. Situation Analysis', desc:'Gather baseline data on farmer needs, local resources, and existing problems.'},
+    {name:'2. Objective Setting', desc:'Define SMART (Specific, Measurable, Achievable, Relevant, Time-bound) program goals.'},
+    {name:'3. Plan of Work', desc:'Schedule specific activities, assign staff, and allocate resources and budget.'},
+    {name:'4. Implementation', desc:'Carry out the planned extension activities in the field.'},
+    {name:'5. Evaluation', desc:'Assess outcomes and impact, feeding lessons back into the next situation analysis.'}
+  ];
+  stages.forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'term-chip';
+    chip.textContent = s.name;
+    chip.addEventListener('click', ()=>{
+      tooltip.textContent = s.desc;
+      tooltip.classList.add('show');
+    });
+    chipsWrap.appendChild(chip);
+  });
+}
+
+function initMethodSelector(){
+  const slider = document.getElementById('methodSlider');
+  const barIndiv = document.getElementById('barIndiv');
+  const barGroup = document.getElementById('barGroup');
+  const barMass = document.getElementById('barMass');
+  const labelIndiv = document.getElementById('labelIndiv');
+  const labelGroup = document.getElementById('labelGroup');
+  const labelMass = document.getElementById('labelMass');
+  const readout = document.getElementById('methodReadout');
+  function update(){
+    const v = +slider.value;
+    const audience = Math.round(Math.pow(10, 1+ (v/100)*4));
+    let indiv, group, mass, recommended;
+    if(v < 15){ indiv=90; group=25; mass=5; recommended='Individual methods (farm/home visits)'; }
+    else if(v < 55){ indiv=35; group=85; mass=30; recommended='Group methods (demonstrations, field days)'; }
+    else { indiv=10; group=40; mass=90; recommended='Mass methods (radio, print, social media)'; }
+    barIndiv.style.width = indiv+'%';
+    barGroup.style.width = group+'%';
+    barMass.style.width = mass+'%';
+    labelIndiv.textContent = indiv+'% suited';
+    labelGroup.textContent = group+'% suited';
+    labelMass.textContent = mass+'% suited';
+    readout.textContent = 'Estimated audience size: ~'+audience.toLocaleString()+' farmers → Best-fit strategy: '+recommended+'.';
+  }
+  slider.addEventListener('input', update);
+  update();
+}
+
+function initSCurve(){
+  const slider = document.getElementById('sCurveSlider');
+  const dot = document.getElementById('sCurveDot');
+  const readout = document.getElementById('sCurveReadout');
+  function logistic(t){
+    const x = (t-50)/12;
+    return 1/(1+Math.exp(-x));
+  }
+  function svgPointFromT(t){
+    const x = 20 + (t/100)*260;
+    const cum = logistic(t);
+    const y = 125 - cum*105;
+    return {x:x, y:y, cum:cum};
+  }
+  function update(){
+    const t = +slider.value;
+    const p = svgPointFromT(t);
+    dot.setAttribute('cx', p.x);
+    dot.setAttribute('cy', p.y);
+    const pct = (p.cum*100).toFixed(1);
+    let category, channel;
+    if(pct < 2.5){ category='Innovators (~2.5%)'; channel='Scientific/mass-media sources; venturesome, cosmopolite networks.'; }
+    else if(pct < 16){ category='Early Adopters (~13.5%)'; channel='Opinion leaders and interpersonal networks; seen as role models.'; }
+    else if(pct < 50){ category='Early Majority (~34%)'; channel='Peer influence and local interpersonal networks; deliberate adopters.'; }
+    else if(pct < 84){ category='Late Majority (~34%)'; channel='Peer pressure and economic necessity; skeptical, needs strong local proof.'; }
+    else { category='Laggards (~16%)'; channel='Traditional, localite, interpersonal (neighbors/family); most resistant to change.'; }
+    readout.textContent = 'Cumulative adoption: '+pct+'% -> Dominant group now: '+category+'. Best channel: '+channel;
+  }
+  slider.addEventListener('input', update);
+  update();
+}
+
+function initME(){
+  const chipsWrap = document.getElementById('meChips');
+  const tooltip = document.getElementById('meTooltip');
+  const terms = [
+    {name:'Monitoring', desc:'Continuous, real-time tracking of program activities and immediate outputs while implementation is ongoing (e.g., number of trainings held, attendance).'},
+    {name:'Evaluation', desc:'Periodic, in-depth assessment of program outcomes and impact: did farmer income, yields, or adoption actually improve?'}
+  ];
+  terms.forEach(term => {
+    const chip = document.createElement('div');
+    chip.className = 'term-chip';
+    chip.textContent = term.name;
+    chip.addEventListener('click', ()=>{
+      tooltip.textContent = term.name+': '+term.desc;
+      tooltip.classList.add('show');
+    });
+    chipsWrap.appendChild(chip);
+  });
+}
+
+/* ---------------------------- INIT ---------------------------- */
+for(let i=0;i<NUM_DOMAINS;i++) renderDomain(i);
+initTimeline(); initSMCR(); initPlanCycle(); initMethodSelector(); initSCurve(); initME();
+renderSlideNav();
+</script>
+</body>
+</html>
